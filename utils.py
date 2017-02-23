@@ -25,12 +25,12 @@ import numpy as np
 #
 # caching= dict(
 #     used=int,
-#     content=list(list()),
+#     servers=list(list()),
 # )
 
 
 # ======================================================================
-def validate(caching, videos):
+def validate(caching, videos, cache_size):
     """
     Validate a caching.
 
@@ -41,8 +41,14 @@ def validate(caching, videos):
     Returns:
 
     """
-
-    return validation
+    is_valid = True
+    for files in caching['servers']:
+        if files:
+            filled = 0
+            for file in files:
+                filled += videos[file]
+            is_valid = is_valid and (filled <= cache_size)
+    return is_valid
 
 
 # ======================================================================
@@ -55,4 +61,6 @@ def score(caching, requests):
     Returns:
 
     """
+    scoring = 0
+
     return scoring

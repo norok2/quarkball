@@ -31,7 +31,7 @@ def my_test_input(
     for source in sources:
         in_filepath = os.path.join(in_dirpath, source)
         network = utils.load(in_filepath)
-        print(network)
+        print(network['cache_size'])
 
 
 # ======================================================================
@@ -50,8 +50,8 @@ def main():
     print(__doc__)
     begin_time = datetime.datetime.now()
 
-    # my_test_input()
-    my_test_output()
+    my_test_input()
+    # my_test_output()
 
     end_time = datetime.datetime.now()
     print('\nExecTime: {}'.format(end_time - begin_time))

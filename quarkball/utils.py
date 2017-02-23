@@ -10,7 +10,7 @@ from __future__ import (
     division, absolute_import, print_function, unicode_literals)
 
 import numpy as np
-
+import numba
 
 # ======================================================================
 # :: data structures example
@@ -53,20 +53,26 @@ def validate(caching, videos, cache_size):
 
 
 # ======================================================================
-def score(caching, requests):
+# @numba.jit
+def score(caching, requests, cache_latencies, server_latencies):
     """
 
     Args:
         caching ():
         requests ():
+        cache_latencies ():
 
     Returns:
 
     """
     scoring = 0
     for video, endpoint, num in requests:
-        pass
-
+        for cache, videos in enumerate(caching['servers']):
+            latency = max_latency = server_latencies[endpoint]
+            if video in videos:
+                if cache_latencies[endpoint, cache] < latency:
+                    latency = cache_latencies[endpoint, cache]
+        scoring += (max_latency - latency) * num
     return scoring
 
 

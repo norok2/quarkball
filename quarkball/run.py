@@ -31,7 +31,8 @@ def my_test_input(
     for source in sources:
         in_filepath = os.path.join(in_dirpath, source)
         network = utils.load(in_filepath)
-        print(network['cache_size'])
+        print(network['num_endpoints'])
+
 
 
 # ======================================================================
@@ -46,12 +47,27 @@ def my_test_output(
 
 
 # ======================================================================
+def my_test_score(
+        in_dirpath=IN_DIRPATH,
+        out_dirpath=OUT_DIRPATH,
+        source='example'):
+    in_filepath = os.path.join(in_dirpath, source + '.in')
+    network = utils.load(in_filepath)
+    print(network)
+    out_filepath = os.path.join(out_dirpath, source + '.out')
+    caching = utils._load_output(out_filepath)
+    print(utils.score(
+        caching, network['requests'], network['cache_latencies'],
+        network['server_latencies']))
+
+# ======================================================================
 def main():
     print(__doc__)
     begin_time = datetime.datetime.now()
 
-    my_test_input()
+    # my_test_input()
     # my_test_output()
+    my_test_score()
 
     end_time = datetime.datetime.now()
     print('\nExecTime: {}'.format(end_time - begin_time))

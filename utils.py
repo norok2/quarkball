@@ -14,19 +14,19 @@ import numpy as np
 
 # ======================================================================
 # :: data structures example
-istance = dict(
-    videos=np.array(num_videos, dtype=int),
-    num_endpoints=int,
-    requests=list((video, endpoint, num)),
-    num_caches=int,
-    cache_size=int,
-    latencies=np.array(dtype=int).shape((num_endpoints, num_caches))
-)
-
-caching= dict(
-    used=int,
-    content=list(),
-)
+# istance = dict(
+#     videos=np.array(num_videos, dtype=int),
+#     num_endpoints=int,
+#     requests=list((video, endpoint, num)),
+#     num_caches=int,
+#     cache_size=int,
+#     latencies=np.array(dtype=int).shape((num_endpoints, num_caches))
+# )
+#
+# caching= dict(
+#     used=int,
+#     content=list(list()),
+# )
 
 
 # ======================================================================
@@ -41,6 +41,7 @@ def validate(caching, videos):
     Returns:
 
     """
+
     return validation
 
 

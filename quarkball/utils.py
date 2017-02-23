@@ -5,22 +5,23 @@ quarkball2017
 """
 
 # ======================================================================
-# :: Future Imports
+# :: Imports
 from __future__ import (
     division, absolute_import, print_function, unicode_literals)
 
-
 import numpy as np
+
 
 # ======================================================================
 # :: data structures example
-# istance = dict(
+# network = dict(
 #     videos=np.array(num_videos, dtype=int),
+#     server_latencies=np.array(dtype=int)
 #     num_endpoints=int,
 #     requests=list((video, endpoint, num)),
 #     num_caches=int,
 #     cache_size=int,
-#     latencies=np.array(dtype=int).shape((num_endpoints, num_caches))
+#     cache_latencies=np.array(dtype=int).shape((num_endpoints, num_caches))
 # )
 #
 # caching= dict(
@@ -57,10 +58,23 @@ def score(caching, requests):
 
     Args:
         caching ():
+        requests ():
 
     Returns:
 
     """
     scoring = 0
+    for video, endpoint, num in requests:
+        pass
 
     return scoring
+
+
+# ======================================================================
+def load(in_filepath):
+    return
+
+
+# ======================================================================
+def save(out_filepath, caching):
+    return

@@ -34,13 +34,24 @@ def my_test_input(
         print(network)
 
 
+# ======================================================================
+def my_test_output(
+        in_dirpath=OUT_DIRPATH,
+        source='example.out'):
+    in_filepath = os.path.join(in_dirpath, source)
+    caching = utils._load_output(in_filepath)
+    print(caching)
+    out_filepath = os.path.join(in_dirpath, 'test_' + source)
+    utils.save(out_filepath, caching)
+
 
 # ======================================================================
 def main():
     print(__doc__)
     begin_time = datetime.datetime.now()
 
-    my_test_input()
+    # my_test_input()
+    my_test_output()
 
     end_time = datetime.datetime.now()
     print('\nExecTime: {}'.format(end_time - begin_time))

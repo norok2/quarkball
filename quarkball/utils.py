@@ -72,8 +72,16 @@ def score(caching, requests):
 
 # ======================================================================
 def load(in_filepath):
+    """
+
+    Args:
+        in_filepath ():
+
+    Returns:
+
+    """
     network = {}
-    with open(in_filepath, 'r+') as file:
+    with open(in_filepath, 'r') as file:
         names = (
             'num_videos', 'num_endpoints', 'num_requests', 'num_caches',
             'cache_size')
@@ -97,5 +105,38 @@ def load(in_filepath):
 
 
 # ======================================================================
+def _load_output(in_filepath):
+    """
+
+    Args:
+        in_filepath ():
+
+    Returns:
+
+    """
+    caching = {}
+    with open(in_filepath, 'r') as file:
+        caching['used'] = int(file.readline())
+        caching['servers'] = []
+        for i in range(caching['used']):
+            data = [int(v) for v in file.readline().split()]
+            index = data[0]
+            caching['servers'].append(data[1:])
+    return caching
+
+
+# ======================================================================
 def save(out_filepath, caching):
-    return
+    """
+
+    Args:
+        out_filepath ():
+        caching ():
+
+    Returns:
+
+    """
+    with open(out_filepath, 'w+') as file:
+        file.write(str(caching['used']) + '\n')
+        for i, server in enumerate(caching['servers']):
+            file.write(str(i) + ' ' + ' '.join([str(v) for v in server]) + '\n')

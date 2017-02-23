@@ -19,8 +19,9 @@ DIRPATH = 'data'
 IN_DIRPATH = os.path.join(DIRPATH, 'input')
 OUT_DIRPATH = os.path.join(DIRPATH, 'output')
 SOURCES = (
-    'kittens.in', 'me_at_the_zoo.in', 'trending_toda.in',
-    'videos_worth_spreading.in')
+    # 'kittens.in', 'me_at_the_zoo.in', 'trending_toda.in',
+    # 'videos_worth_spreading.in',
+    'example.in',)
 
 
 # ======================================================================
@@ -29,18 +30,20 @@ def my_test_input(
         sources=SOURCES):
     for source in sources:
         in_filepath = os.path.join(in_dirpath, source)
-        utils.load(in_filepath)
+        network = utils.load(in_filepath)
+        print(network)
+
 
 
 # ======================================================================
 def main():
-    print(__doc__.strip())
+    print(__doc__)
     begin_time = datetime.datetime.now()
 
     my_test_input()
 
     end_time = datetime.datetime.now()
-    print('ExecTime: {}'.format(end_time - begin_time))
+    print('\nExecTime: {}'.format(end_time - begin_time))
 
 
 # ======================================================================

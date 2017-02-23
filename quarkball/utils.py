@@ -72,7 +72,28 @@ def score(caching, requests):
 
 # ======================================================================
 def load(in_filepath):
-    return
+    network = {}
+    with open(in_filepath, 'r+') as file:
+        names = (
+            'num_videos', 'num_endpoints', 'num_requests', 'num_caches',
+            'cache_size')
+        network.update(
+            {k: int(v) for k, v in zip(names, file.readline().split())})
+        network['videos'] = np.array([int(v) for v in file.readline().split()])
+        network['server_latencies'] = np.zeros(network['num_endpoints'])
+        network['cache_latencies'] = np.zeros(
+            (network['num_endpoints'], network['num_caches']))
+        for i in range(network['num_endpoints']):
+            network['server_latencies'][i], lines_to_read = [
+                int(v) for v in file.readline().split()]
+            for j in range(lines_to_read):
+                k, latency = [int(v) for v in file.readline().split()]
+                network['cache_latencies'][i, k] = latency
+        network['requests'] = []
+        for i in range(network['num_requests']):
+            network['requests'].append(
+                [int(v) for v in file.readline().split()])
+    return network
 
 
 # ======================================================================

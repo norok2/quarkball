@@ -19,8 +19,8 @@ DIRPATH = 'data'
 IN_DIRPATH = os.path.join(DIRPATH, 'input')
 OUT_DIRPATH = os.path.join(DIRPATH, 'output')
 SOURCES = (
-    # 'kittens.in', 'me_at_the_zoo.in', 'trending_toda.in',
-    # 'videos_worth_spreading.in',
+    'kittens.in', 'me_at_the_zoo.in', 'trending_today.in',
+    'videos_worth_spreading.in',
     'example.in',)
 
 

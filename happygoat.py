@@ -22,7 +22,7 @@ import random
 #GLOBAL VARIABBLES(START)
 #########################
 itIsTheFirstLine = True     #This variable is about the input line. If the line is the first the variable itIsTheFirstLine is True.
-itIsTheFirstLine = True
+itIsTheSecondLine = True
 T=0     #The number of lines with usefull Data. the number of tierations.
 result = "Not any result right now" #this is used for the result wich is printed in the end of the code with the default value.
 testSum = 0 #This is used to make the mainCheckFunction() bit more interesting but making the function to work as add function.
@@ -32,6 +32,7 @@ dwnldK = 0
 dwnldTArray = []
 dwnldDarray = []
 spliterFunctionsArray = []
+endPointArray = []
 
 #first line variables.
 howManyVideos = 0
@@ -71,7 +72,7 @@ def firstLineCorrection(inputForNInitiation):
     global itIsTheFirstLine
     global T
     itIsTheFirstLine = False
-    T = inputForNInitiation
+    T = 11
 
 def SecondLineCorrection():
     global itIsTheSecondLine
@@ -127,7 +128,8 @@ def secondLineSpliter(inputFromN):
 
 
 def endPointHandler(inputFromN):
-    global countForDwnldN, latency, i = 0
+    global countForDwnldN, latency, endPointArray
+    i = 0
     endpointvalues = ""
     endpointvalues = inputFromN.split()
     if countForDwnldN == 0:
@@ -204,31 +206,23 @@ def main():
         fileForOutput.write("itIsTheFirstLine now is " + str(itIsTheFirstLine))
         #print("itIsTheFirstLine now is " + str(itIsTheFirstLine) end='\n' file=f)
         if itIsTheFirstLine == True:
-            firstLineCorrection(N)
-            firstLineSpliter(N)
-        elif itIsTheSecondLine = True:
-            secondLineCorrection()
-            secondLineSpliter(N)
+            firstLineCorrection(N.rstrip('\n'))
+            firstLineSpliter(N.rstrip('\n'))
+        elif itIsTheSecondLine == True:
+            SecondLineCorrection()
+            secondLineSpliter(N.rstrip('\n'))
         else:
-            result = mainCalculativFunction(N)
-            countForT += 1
-            print("the T which represent the number of lines with input data, now is " + str(T)) 
-            fileForOutput.write("the T which represent the number of lines with input data, now is " + str(T))       
-            if iterationsCheck(countForT):
-                #here add code when the answer comes in the end as a final result.
-                printFromArray2(howManyVideos)
-                printFromArray2(howManyEndPoints)
-                printFromArray2(howManyRequests)
-                printFromArray2(howManyCaches)
-                printFromArray2(howManyMBsPerCache)
-                printFromArray2(endPointArray)
-                print("the result of the main calculative fuction know as mainCalculativFunction() now is " + result)
-                fileForOutput.write("the result of the main calculative fuction know as mainCalculativFunction() now is " + result)
-            else:
-                #Here add code if there are many answers that are coming separately with every iteration.
-                #here is the best location for the printFromArray()function.
-                print ("the N now which is the value of the last input now is " + str(N))
-                fileForOutput.write("the N now which is the value of the last input now is " + str(N))
+            endPointHandler(N.rstrip('\n'))
+
+
+        print(howManyVideos)
+        print(howManyEndPoints)
+        print(howManyRequests)
+        print(howManyCaches)
+        print(howManyVideos)
+        print(howManyMBsPerCache)
+        print(endPointArray)
+
                 
 if __name__ == "__main__": main()
 

@@ -32,6 +32,7 @@ dwnldK = 0
 dwnldTArray = []
 dwnldDarray = []
 spliterFunctionsArray = []
+endPointArray = []
 
 #first line variables.
 howManyVideos = 0
@@ -127,7 +128,7 @@ def secondLineSpliter(inputFromN):
 
 
 def endPointHandler(inputFromN):
-    global countForDwnldN, latency
+    global countForDwnldN, latency, endPointArray
     i = 0
     endpointvalues = ""
     endpointvalues = inputFromN.split()
@@ -211,15 +212,16 @@ def main():
             SecondLineCorrection()
             secondLineSpliter(N.rstrip('\n'))
         else:
-            endPointHandler(N)
+            endPointHandler(N.rstrip('\n'))
 
 
-        print(howManyVideos[])
+        print(howManyVideos)
         print(howManyEndPoints)
         print(howManyRequests)
         print(howManyCaches)
         print(howManyVideos)
         print(howManyMBsPerCache)
+        print(endPointArray)
 
                 
 if __name__ == "__main__": main()

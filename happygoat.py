@@ -5,6 +5,8 @@
 from __future__ import division
 import math
 import random
+#import numpy
+
 #import sys
 #import os
 #import datetime
@@ -20,11 +22,24 @@ import random
 #GLOBAL VARIABBLES(START)
 #########################
 itIsTheFirstLine = True     #This variable is about the input line. If the line is the first the variable itIsTheFirstLine is True.
+itIsTheFirstLine = True
 T=0     #The number of lines with usefull Data. the number of tierations.
 result = "Not any result right now" #this is used for the result wich is printed in the end of the code with the default value.
 testSum = 0 #This is used to make the mainCheckFunction() bit more interesting but making the function to work as add function.
 countForT = 0 #this is the count vairiable that helps to check that the iterations are not more than the predefined T variable.
+countForDwnldN = 0
+dwnldK = 0
+dwnldTArray = []
+dwnldDarray = []
 spliterFunctionsArray = []
+
+#first line variables.
+howManyVideos = 0
+howManyEndPoints = 0
+howManyRequests = 0
+howManyCaches = 0
+howManyMBsPerCache = 0
+
 fileForOutput = open('output.txt','w')
 fileForInput = open('input.in','r')
 #######################
@@ -57,6 +72,10 @@ def firstLineCorrection(inputForNInitiation):
     global T
     itIsTheFirstLine = False
     T = inputForNInitiation
+
+def SecondLineCorrection():
+    global itIsTheSecondLine
+    itIsTheSecondLine = False
     
 #this is the function that uses the countForT to check up that the iterations are not more than what the T variable defines    
 def iterationsCheck(hereGoesTheCountForTParameter):
@@ -69,6 +88,12 @@ def iterationsCheck(hereGoesTheCountForTParameter):
 def printFromArray(Arrayname, probablytheTVariable):
     for i in range(int(probablytheTVariable)):
         print(str(Arrayname[i]))
+
+def printFromArray2(Arrayname):
+    for i in Arrayname:
+        print(str(Arrayname[i]))
+
+
         
 #fills a two-dimensional array with the value N, (the line from the input).
 #it needs to get called for every line from the main iteration, (for every N) 
@@ -85,7 +110,39 @@ def spliterFunction(strValueFromN):
 def twoDimentionalArrayHandler(arrayNameParameter, Iterationsnumber):
     return int(arrayNameParameter[Iterationsnumber][0]) + int(arrayNameParameter[Iterationsnumber][1])
 
-        
+
+
+def firstLineSpliter(inputFromN):
+    global howManyVideos, howManyEndPoints, howManyRequests, howManyCaches, howManyMBsPerCache
+    firtstLine = inputFromN.split()
+    howManyVideos = firtstLine[0]
+    howManyEndPoints = firtstLine[1]
+    howManyRequests = firtstLine[2]
+    howManyCaches = firtstLine[3]
+    howManyMBsPerCache = firtstLine[4]
+
+
+def secondLineSpliter(inputFromN):
+    videoArray = inputFromN.split()
+
+
+def endPointHandler(inputFromN):
+    global countForDwnldN, latency, i = 0
+    endpointvalues = ""
+    endpointvalues = inputFromN.split()
+    if countForDwnldN == 0:
+        i = i + 1
+        endpointvalues[0] = latency
+        countForDwnldN = endpointvalues[1]
+        endPointArray[i].append(latency)
+    else:
+        endPointArray[i].append(endpointvalues)
+        countForDwnldN = countForDwnldN - 1
+
+
+def insideCaseCalculation(dwnldNparam, dwnldKparam):
+    print(int(dwnldNparam) + int(dwnldKparam))
+
 ##########################
 #TEMPLATE FUNCTIONS(END)
 ##########################
@@ -148,6 +205,10 @@ def main():
         #print("itIsTheFirstLine now is " + str(itIsTheFirstLine) end='\n' file=f)
         if itIsTheFirstLine == True:
             firstLineCorrection(N)
+            firstLineSpliter(N)
+        elif itIsTheSecondLine = True:
+            secondLineCorrection()
+            secondLineSpliter(N)
         else:
             result = mainCalculativFunction(N)
             countForT += 1
@@ -155,6 +216,12 @@ def main():
             fileForOutput.write("the T which represent the number of lines with input data, now is " + str(T))       
             if iterationsCheck(countForT):
                 #here add code when the answer comes in the end as a final result.
+                printFromArray2(howManyVideos)
+                printFromArray2(howManyEndPoints)
+                printFromArray2(howManyRequests)
+                printFromArray2(howManyCaches)
+                printFromArray2(howManyMBsPerCache)
+                printFromArray2(endPointArray)
                 print("the result of the main calculative fuction know as mainCalculativFunction() now is " + result)
                 fileForOutput.write("the result of the main calculative fuction know as mainCalculativFunction() now is " + result)
             else:
@@ -178,4 +245,3 @@ if __name__ == "__main__": main()
 fileForInput.close()
 fileForOutput.close()
 print("That's all folks!")
-

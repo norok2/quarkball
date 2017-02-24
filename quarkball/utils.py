@@ -177,7 +177,7 @@ class Caching(object):
             for i in range(num_caching):
                 data = [int(val) for val in file.readline().split()]
                 # index = data[0]
-                self.caches.add(set(data[1:]))
+                self.caches.append(set(data[1:]))
         return self
 
     # ----------------------------------------------------------

@@ -17,14 +17,18 @@ class CachingRandom(Caching):
     # ----------------------------------------------------------
     def fill(self, network):
         min_video_size = np.min(network.videos)
-        caches_free = np.ones(network.num_caches) * network.cache_size
+        new_videos = list(range(network.num_videos))
         for i, cache in enumerate(self.caches):
-            while min_video_size < caches_free[i]:
-                new_video = random.randint(0, network.num_videos - 1)
+            cache_free = network.cache_size
+            random.shuffle(new_videos)
+            for new_video in new_videos:
                 video_size = network.videos[new_video]
-                if video_size <= caches_free[i] and new_video not in cache:
+                if video_size <= cache_free and new_video not in cache:
                     cache.add(new_video)
-                    caches_free[i] -= video_size
+                    cache_free -= video_size
+                if min_video_size > cache_free:
+                    break
+
 
 
 # ======================================================================
@@ -35,18 +39,17 @@ class CachingRandomSeed(Caching):
     # ----------------------------------------------------------
     def fill(self, network):
         min_video_size = np.min(network.videos)
-        caches_free = np.ones(network.num_caches) * network.cache_size
+        new_videos = list(range(network.num_videos))
+        random.shuffle(new_videos)
         for i, cache in enumerate(self.caches):
-            new_video = random.randint(0, network.num_videos - 1)
-            j = 0
-            while min_video_size < caches_free[i] and j < network.num_videos:
+            cache_free = network.cache_size
+            for new_video in new_videos:
                 video_size = network.videos[new_video]
-                if video_size <= caches_free[i] and new_video not in cache:
+                if video_size <= cache_free and new_video not in cache:
                     cache.add(new_video)
-                    caches_free[i] -= video_size
-                else:
-                    new_video = (new_video + 1) % network.num_videos
-                j += 1
+                    cache_free -= video_size
+                if min_video_size > cache_free:
+                    break
 
 
 # ======================================================================

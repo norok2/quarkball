@@ -99,7 +99,7 @@ def pseudo_monte_carlo(
         out_dirpath=OUT_DIRPATH,
         dst_subpath='pseudo_monte_carlo',
         sources=SOURCES,
-        caching_method=CachingRandomSeed,
+        caching_method=CachingRandom,
         max_iter=4 * 60 * 24,
         min_score=2652000):
     print('Pseudo Monte Carlo simulation')

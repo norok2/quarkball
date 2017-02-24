@@ -129,15 +129,18 @@ def secondLineSpliter(inputFromN):
 
 def endPointHandler(inputFromN):
     global countForDwnldN, latency, endPointArray
-    i = 0
+    print("endpointHandler started")
+    i = -1
     endpointvalues = ""
     endpointvalues = inputFromN.split()
     if countForDwnldN == 0:
+        print("countForDwnldN is 0")
         i = i + 1
         endpointvalues[0] = latency
-        countForDwnldN = endpointvalues[1]
+        countForDwnldN = int(endpointvalues[1])
         endPointArray[i].append(latency)
     else:
+        print("countForDwnldN is NOT 0")
         endPointArray[i].append(endpointvalues)
         countForDwnldN = countForDwnldN - 1
 

@@ -22,6 +22,24 @@ class Network(object):
             cache_size,
             cache_latencies,
             requests=None):
+        """
+        Generate the network.
+
+        Args:
+            videos (np.ndarray): The video array.
+                The values correspond to the video size in MB.
+                The indexes correspond to the video ID.
+            endpoint_latencies (np.ndarray): The latency of endpoints.
+            cache_size (int): The capacity of each caching server in MB.
+            cache_latencies (np.ndarray): The cache latency of endpoints.
+                First dim goes through endpoints.
+                Second dim goes through caches.
+            requests (list[tuple]): The list of requests.
+                Each tuple contains:
+                - the video ID;
+                - the requesting endpoint;
+                - the number of requests.
+        """
         self.videos = videos
         self.endpoint_latencies = endpoint_latencies
         self.cache_size = cache_size
@@ -47,8 +65,6 @@ class Network(object):
     @property
     def num_requests(self):
         return len(self.requests)
-
-
 
     # ----------------------------------------------------------
     @property
@@ -90,7 +106,7 @@ class Network(object):
             requests = []
             for i in range(num_requests):
                 requests.append(
-                    tuple([int(val) for val in file.readline().split()]))
+                    tuple(int(val) for val in file.readline().split()))
         self = cls(
             videos, endpoint_latencies, cache_size, cache_latencies, requests)
         return self
@@ -131,6 +147,14 @@ class Caching(object):
     def __init__(
             self,
             caches=None):
+        """
+        Caching of videos.
+
+        Args:
+            caches (list[set]): The videos contained in each caching server.
+                The information on the cache size (maximum memory available)
+                and videos' size is not stored here.
+        """
         try:
             iter(caches)
         except TypeError:

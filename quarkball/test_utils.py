@@ -16,7 +16,7 @@ import shutil
 import numpy as np
 
 from quarkball.utils import Network, Caching
-from quarkball.fill_caching import CachingRandom, CachingRandomSeed
+import quarkball.fill_caching as fill
 
 DIRPATH = 'data'
 IN_DIRPATH = os.path.join(DIRPATH, 'input')
@@ -67,7 +67,7 @@ def test_fill(
     in_filepath = os.path.join(in_dirpath, source + '.in')
     network = Network.load(in_filepath)
     out_filepath = os.path.join(out_dirpath, source + '.out')
-    caching = CachingRandom(network.num_caches)
+    caching = fill.CachingRandom(network.num_caches)
     caching.fill(network)
     print(repr(caching))
     print('Random Caching - Score: {}'.format(caching.score(network)))
@@ -99,7 +99,7 @@ def pseudo_monte_carlo(
         out_dirpath=os.path.join(OUT_DIRPATH, 'pseudo_monte_carlo'),
         best_subpath='best',
         sources=SOURCES,
-        caching_method=CachingRandom,
+        caching_method=fill.CachingRandom,
         max_iter=int(1e8 - 1),
         min_score=2652000):
     print('Pseudo Monte Carlo simulation')
@@ -175,8 +175,8 @@ def main():
     # test_caching_output()
     # test_score()
     # test_fill()
-    # test_method(caching_method=CachingRandom)
     pseudo_monte_carlo()
+    # test_method(caching_method=fill.CachingSortRequests)
 
     end_time = datetime.datetime.now()
     print('\nExecTime: {}'.format(end_time - begin_time))

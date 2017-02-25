@@ -89,7 +89,8 @@ class Network(object):
                     cache_latencies[i, k] = latency
             requests = []
             for i in range(num_requests):
-                requests.append([int(val) for val in file.readline().split()])
+                requests.append(
+                    tuple([int(val) for val in file.readline().split()]))
         self = cls(
             videos, endpoint_latencies, cache_size, cache_latencies, requests)
         return self

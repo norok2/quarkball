@@ -211,7 +211,7 @@ class Caching(object):
 
 
 # ======================================================================
-# @numba.jit
+@numba.jit
 def _score(servers, requests, cache_latencies, endpoint_latencies):
     scoring = 0
     num_tot = 0

@@ -33,6 +33,8 @@ dwnldK = 0
 dwnldTArray = []
 dwnldDarray = []
 spliterFunctionsArray = []
+videoArrayX = []
+videoArray = []
 endPointArray = []
 requestArray = []
 #first line variables.
@@ -67,6 +69,7 @@ def loader():
         elif itIsTheSecondLine == True:
             SecondLineCorrection()
             secondLineSpliter(N.rstrip('\n'))
+            videoArrayRepairer()
         else:
             if int(i) <= int(howManyEndPoints):
                 endPointHandler(N.rstrip('\n'), i)
@@ -76,14 +79,16 @@ def loader():
                 requestArrayReapairer(howManyRequests)
 
 def printTheResults():
-    print(howManyVideos)
-    print(howManyEndPoints)
-    print(howManyRequests)
-    print(howManyCaches)
-    print(howManyVideos)
-    print(howManyMBsPerCache)
-    print(endPointArray)
-    print(requestArray)
+    print("howManyVideos variable is " + str(howManyVideos))
+    print("howManyEndPoints variable is " + str(howManyEndPoints))
+    print("howManyCaches variable is " + str(howManyCaches))
+    print("howManyVideos variable is " + str(howManyVideos))
+    print("howManyMBsPerCache variable is " + str(howManyMBsPerCache))
+    print("videoArray list has " + str(videoArray))
+    print("endPointArray list has " + str(endPointArray))
+    print("requestArray list has " + str(requestArray))
+
+
 
 #the mainCheckFunction() function is doing the necessary checking before the mainCalculativFunction().
 #there is always something to check
@@ -156,7 +161,11 @@ def firstLineSpliter(inputFromN):
 
 
 def secondLineSpliter(inputFromN):
-    videoArray = inputFromN.split()
+    videoArrayX.append(inputFromN.split())
+
+def videoArrayRepairer():
+    for i in videoArrayX[0]:
+        videoArray.append(i)
 
 
 def endPointHandler(inputFromN, inputForI):

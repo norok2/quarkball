@@ -27,13 +27,13 @@ T=0     #The number of lines with usefull Data. the number of tierations.
 result = "Not any result right now" #this is used for the result wich is printed in the end of the code with the default value.
 testSum = 0 #This is used to make the mainCheckFunction() bit more interesting but making the function to work as add function.
 countForT = 0 #this is the count vairiable that helps to check that the iterations are not more than the predefined T variable.
+i = 0
 countForDwnldN = 0
 dwnldK = 0
 dwnldTArray = []
 dwnldDarray = []
 spliterFunctionsArray = []
 endPointArray = []
-
 #first line variables.
 howManyVideos = 0
 howManyEndPoints = 0
@@ -55,8 +55,7 @@ fileForInput = open('input.in','r')
 
 
 def loader():
-    global countForT
-    i = 0
+    global countForT, i
     for N in fileForInput:
         print("itIsTheFirstLine now is " + str(itIsTheFirstLine))
         fileForOutput.write("itIsTheFirstLine now is " + str(itIsTheFirstLine))
@@ -68,7 +67,8 @@ def loader():
             SecondLineCorrection()
             secondLineSpliter(N.rstrip('\n'))
         else:
-            endPointHandler(N.rstrip('\n'), i)
+            if int(i) <= int(howManyEndPoints):
+                endPointHandler(N.rstrip('\n'), i)
 
 def printTheResults():
     print(howManyVideos)
@@ -156,25 +156,31 @@ def secondLineSpliter(inputFromN):
 def endPointHandler(inputFromN, inputForI):
     global countForDwnldN, latency, endPointArray, i
     i = inputForI
+    #endPointArray = []*int(howManyEndPoints)
     print("endpointHandler started")
     print("i now is " + str(i))
     endpointvalues = ""
     endpointvalues = inputFromN.split()
-    if countForDwnldN == 0:
+    if int(countForDwnldN) == 0:
         print("countForDwnldN is 0")
         print("endpointvalues is " + str(endpointvalues))
         latency = endpointvalues[0]
         print ("latency is " + str(latency))
         countForDwnldN = endpointvalues[1]
         print("countForDwnldN is " + str(countForDwnldN))
-        #endPointArray[i].append(latency)
+        i = int(i) + 1
+        endPointArray.append([])
+        endPointArray[i - 1].append(latency)
+
 
     else:
         print("countForDwnldN is NOT 0")
-        endPointArray.append(endpointvalues)
+        print("countForDwnldN is " + str(countForDwnldN))
+        print("i is " + str(i))
+        endPointArray[i-1].append(endpointvalues)
         countForDwnldN = int(countForDwnldN) - 1
-        print("endPointArray is " + str(endPointArray[i]))
-    i = i + 1
+        print("endPointArray is " + str(endPointArray[i-1]))
+        #i = int(i) + 1
 
 
 

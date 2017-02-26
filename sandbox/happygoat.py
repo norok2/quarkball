@@ -171,8 +171,6 @@ def endPointHandler(inputFromN, inputForI):
         i = int(i) + 1
         endPointArray.append([])
         endPointArray[i - 1].append(latency)
-
-
     else:
         print("countForDwnldN is NOT 0")
         print("countForDwnldN is " + str(countForDwnldN))

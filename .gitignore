@@ -97,3 +97,6 @@ ENV/
 .idea/quarkball.iml
 .idea/workspace.xml
 .idea/inspectionProfiles/
+.kdev4/
+*.kate-swp
+*.kdev4

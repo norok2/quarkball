@@ -9,8 +9,12 @@ quarkball2017: base classes
 from __future__ import (
     division, absolute_import, print_function, unicode_literals)
 
+import array
 import numpy as np
-import numba
+try:
+    from numba import jit
+except ImportError:
+    jit = None
 
 
 # ======================================================================
@@ -236,18 +240,18 @@ class Caching(object):
 
 
 # ======================================================================
-@numba.jit
-def _score(servers, requests, cache_latencies, endpoint_latencies):
-    scoring = 0
+@jit
+def _score(caches, requests, cache_latencies, endpoint_latencies):
+    score = 0
     num_tot = 0
     for video, endpoint, num in requests:
         num_tot += num
         latency = max_latency = endpoint_latencies[endpoint]
-        for cache, videos in enumerate(servers):
+        for cache, videos in enumerate(caches):
             if video in videos:
                 cache_latency = cache_latencies[endpoint, cache]
-                if (cache_latency and cache_latency < latency):
+                if cache_latency and cache_latency < latency:
                     latency = cache_latencies[endpoint, cache]
-        scoring += (max_latency - latency) * num
-    scoring = int(scoring / num_tot * 1000)
-    return scoring
+        score += (max_latency - latency) * num
+    score = int(score / num_tot * 1000)
+    return score

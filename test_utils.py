@@ -175,8 +175,8 @@ def main():
     # test_caching_output()
     # test_score()
     # test_fill()
-    pseudo_monte_carlo()
-    # test_method(caching_method=fill.CachingSortRequests)
+    # pseudo_monte_carlo()
+    test_method(caching_method=fill.CachingOptimByCaches)
 
     end_time = datetime.datetime.now()
     print('\nExecTime: {}'.format(end_time - begin_time))

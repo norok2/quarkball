@@ -69,6 +69,7 @@ def loader():
         else:
             if int(i) <= int(howManyEndPoints):
                 endPointHandler(N.rstrip('\n'), i)
+                endPointReapairer(howManyEndPoints)
 
 def printTheResults():
     print(howManyVideos)
@@ -181,6 +182,9 @@ def endPointHandler(inputFromN, inputForI):
         #i = int(i) + 1
 
 
+def endPointReapairer(howManyEndPointsParameter):
+    if len(endPointArray) > int(howManyEndPointsParameter):
+        endPointArray.pop()
 
 def insideCaseCalculation(dwnldNparam, dwnldKparam):
     print(int(dwnldNparam) + int(dwnldKparam))

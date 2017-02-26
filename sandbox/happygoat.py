@@ -34,6 +34,7 @@ dwnldTArray = []
 dwnldDarray = []
 spliterFunctionsArray = []
 endPointArray = []
+requestArray = []
 #first line variables.
 howManyVideos = 0
 howManyEndPoints = 0
@@ -70,6 +71,9 @@ def loader():
             if int(i) <= int(howManyEndPoints):
                 endPointHandler(N.rstrip('\n'), i)
                 endPointReapairer(howManyEndPoints)
+            else:
+                requestArrayCollector(N.rstrip('\n'))
+                requestArrayReapairer(howManyRequests)
 
 def printTheResults():
     print(howManyVideos)
@@ -79,6 +83,7 @@ def printTheResults():
     print(howManyVideos)
     print(howManyMBsPerCache)
     print(endPointArray)
+    print(requestArray)
 
 #the mainCheckFunction() function is doing the necessary checking before the mainCalculativFunction().
 #there is always something to check
@@ -185,6 +190,14 @@ def endPointHandler(inputFromN, inputForI):
 def endPointReapairer(howManyEndPointsParameter):
     if len(endPointArray) > int(howManyEndPointsParameter):
         endPointArray.pop()
+
+def requestArrayCollector(inputFromN):
+    requestArray.append(inputFromN.split(' '))
+
+def requestArrayReapairer(howManyRequestsParameter):
+    if len(requestArray) > int(howManyRequestsParameter):
+        requestArray.pop()
+
 
 def insideCaseCalculation(dwnldNparam, dwnldKparam):
     print(int(dwnldNparam) + int(dwnldKparam))

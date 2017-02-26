@@ -105,6 +105,7 @@ def mainCalculativFunction(inputProperty):
         return str(testSum) 
 
 #The function firstLineCorrection() changes the itIsTheFirstLine to False and stores the N to the variable T
+#not an optimal versio. PLEASE DON'T COPY
 def firstLineCorrection(inputForNInitiation):
     global itIsTheFirstLine
     global T
@@ -159,15 +160,19 @@ def firstLineSpliter(inputFromN):
     howManyCaches = firtstLine[3]
     howManyMBsPerCache = firtstLine[4]
 
-
+#this function splits the second line.
+#it inserts the content of the second line to videoArrayX
 def secondLineSpliter(inputFromN):
     videoArrayX.append(inputFromN.split())
 
+#videoArrayX is a buggy array so we need to run videoArrayRepairer() to fix it.
 def videoArrayRepairer():
     for i in videoArrayX[0]:
         videoArray.append(i)
 
-
+#this is a very importan function and it will help me to create the function caser()
+#it vreaks the stream to separated cases.
+#it took me a while to implement it.
 def endPointHandler(inputFromN, inputForI):
     global countForDwnldN, latency, endPointArray, i
     i = inputForI
@@ -195,21 +200,32 @@ def endPointHandler(inputFromN, inputForI):
         print("endPointArray is " + str(endPointArray[i-1]))
         #i = int(i) + 1
 
-
+#it needs to run after the endPointHandler()
+#it repairs if necessary the endPointArray
+#it repairs endPointArray by removing the empty trailer.
 def endPointReapairer(howManyEndPointsParameter):
     if len(endPointArray) > int(howManyEndPointsParameter):
         endPointArray.pop()
 
+
+#it collects the videorequests from the stream
+#it fills the requestArray with the requests
 def requestArrayCollector(inputFromN):
     requestArray.append(inputFromN.split(' '))
 
+
+#it needs to run after the requestArrayCollector()
+#it repairs if necessary the requestArray
+#it repairs requestArray by removing the empty trailer.
 def requestArrayReapairer(howManyRequestsParameter):
     if len(requestArray) > int(howManyRequestsParameter):
         requestArray.pop()
 
 
+#attended for the caser() function.
+#Not useful yet
 def insideCaseCalculation(dwnldNparam, dwnldKparam):
-    print(int(dwnldNparam) + int(dwnldKparam))
+    pass
 
 ##########################
 #TEMPLATE FUNCTIONS(END)

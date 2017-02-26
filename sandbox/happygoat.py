@@ -23,6 +23,7 @@ import random
 #########################
 itIsTheFirstLine = True     #This variable is about the input line. If the line is the first the variable itIsTheFirstLine is True.
 itIsTheSecondLine = True
+
 T=0     #The number of lines with usefull Data. the number of tierations.
 result = "Not any result right now" #this is used for the result wich is printed in the end of the code with the default value.
 testSum = 0 #This is used to make the mainCheckFunction() bit more interesting but making the function to work as add function.

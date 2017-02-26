@@ -27,13 +27,16 @@ T=0     #The number of lines with usefull Data. the number of tierations.
 result = "Not any result right now" #this is used for the result wich is printed in the end of the code with the default value.
 testSum = 0 #This is used to make the mainCheckFunction() bit more interesting but making the function to work as add function.
 countForT = 0 #this is the count vairiable that helps to check that the iterations are not more than the predefined T variable.
+i = 0
 countForDwnldN = 0
 dwnldK = 0
 dwnldTArray = []
 dwnldDarray = []
 spliterFunctionsArray = []
+videoArrayX = []
+videoArray = []
 endPointArray = []
-
+requestArray = []
 #first line variables.
 howManyVideos = 0
 howManyEndPoints = 0
@@ -52,6 +55,40 @@ fileForInput = open('input.in','r')
 ##########################
 #TEMPLATE FUNCTIONS(START)
 ##########################
+
+
+def loader():
+    global countForT, i
+    for N in fileForInput:
+        print("itIsTheFirstLine now is " + str(itIsTheFirstLine))
+        fileForOutput.write("itIsTheFirstLine now is " + str(itIsTheFirstLine))
+        #print("itIsTheFirstLine now is " + str(itIsTheFirstLine) end='\n' file=f)
+        if itIsTheFirstLine == True:
+            firstLineCorrection(N.rstrip('\n'))
+            firstLineSpliter(N.rstrip('\n'))
+        elif itIsTheSecondLine == True:
+            SecondLineCorrection()
+            secondLineSpliter(N.rstrip('\n'))
+            videoArrayRepairer()
+        else:
+            if int(i) <= int(howManyEndPoints):
+                endPointHandler(N.rstrip('\n'), i)
+                endPointReapairer(howManyEndPoints)
+            else:
+                requestArrayCollector(N.rstrip('\n'))
+                requestArrayReapairer(howManyRequests)
+
+def printTheResults():
+    print("howManyVideos variable is " + str(howManyVideos))
+    print("howManyEndPoints variable is " + str(howManyEndPoints))
+    print("howManyCaches variable is " + str(howManyCaches))
+    print("howManyVideos variable is " + str(howManyVideos))
+    print("howManyMBsPerCache variable is " + str(howManyMBsPerCache))
+    print("videoArray list has " + str(videoArray))
+    print("endPointArray list has " + str(endPointArray))
+    print("requestArray list has " + str(requestArray))
+
+
 
 #the mainCheckFunction() function is doing the necessary checking before the mainCalculativFunction().
 #there is always something to check
@@ -124,25 +161,51 @@ def firstLineSpliter(inputFromN):
 
 
 def secondLineSpliter(inputFromN):
-    videoArray = inputFromN.split()
+    videoArrayX.append(inputFromN.split())
+
+def videoArrayRepairer():
+    for i in videoArrayX[0]:
+        videoArray.append(i)
 
 
-def endPointHandler(inputFromN):
-    global countForDwnldN, latency, endPointArray
+def endPointHandler(inputFromN, inputForI):
+    global countForDwnldN, latency, endPointArray, i
+    i = inputForI
+    #endPointArray = []*int(howManyEndPoints)
     print("endpointHandler started")
-    i = -1
+    print("i now is " + str(i))
     endpointvalues = ""
     endpointvalues = inputFromN.split()
-    if countForDwnldN == 0:
+    if int(countForDwnldN) == 0:
         print("countForDwnldN is 0")
-        i = i + 1
-        endpointvalues[0] = latency
-        countForDwnldN = int(endpointvalues[1])
-        endPointArray[i].append(latency)
+        print("endpointvalues is " + str(endpointvalues))
+        latency = endpointvalues[0]
+        print ("latency is " + str(latency))
+        countForDwnldN = endpointvalues[1]
+        print("countForDwnldN is " + str(countForDwnldN))
+        i = int(i) + 1
+        endPointArray.append([])
+        endPointArray[i - 1].append(latency)
     else:
         print("countForDwnldN is NOT 0")
-        endPointArray[i].append(endpointvalues)
-        countForDwnldN = countForDwnldN - 1
+        print("countForDwnldN is " + str(countForDwnldN))
+        print("i is " + str(i))
+        endPointArray[i-1].append(endpointvalues)
+        countForDwnldN = int(countForDwnldN) - 1
+        print("endPointArray is " + str(endPointArray[i-1]))
+        #i = int(i) + 1
+
+
+def endPointReapairer(howManyEndPointsParameter):
+    if len(endPointArray) > int(howManyEndPointsParameter):
+        endPointArray.pop()
+
+def requestArrayCollector(inputFromN):
+    requestArray.append(inputFromN.split(' '))
+
+def requestArrayReapairer(howManyRequestsParameter):
+    if len(requestArray) > int(howManyRequestsParameter):
+        requestArray.pop()
 
 
 def insideCaseCalculation(dwnldNparam, dwnldKparam):
@@ -203,28 +266,10 @@ class Egg(Cote):
 #The main iteration, (AKA the main loop), now is the main() function. 
 #The separation of code to functions blocks keeps the template simple and clear.    
 def main():
-    global countForT
-    for N in fileForInput:
-        print("itIsTheFirstLine now is " + str(itIsTheFirstLine))
-        fileForOutput.write("itIsTheFirstLine now is " + str(itIsTheFirstLine))
-        #print("itIsTheFirstLine now is " + str(itIsTheFirstLine) end='\n' file=f)
-        if itIsTheFirstLine == True:
-            firstLineCorrection(N.rstrip('\n'))
-            firstLineSpliter(N.rstrip('\n'))
-        elif itIsTheSecondLine == True:
-            SecondLineCorrection()
-            secondLineSpliter(N.rstrip('\n'))
-        else:
-            endPointHandler(N.rstrip('\n'))
+    countForT
+    loader()
+    printTheResults()
 
-
-        print(howManyVideos)
-        print(howManyEndPoints)
-        print(howManyRequests)
-        print(howManyCaches)
-        print(howManyVideos)
-        print(howManyMBsPerCache)
-        print(endPointArray)
 
                 
 if __name__ == "__main__": main()

@@ -11,10 +11,17 @@ from __future__ import (
 
 import array
 import numpy as np
+
 try:
     from numba import jit
 except ImportError:
-    jit = None
+    print('E: Numba not found!')
+
+
+    def jit(_):
+        return _
+else:
+    print('I: Using Numba!')
 
 
 # ======================================================================
@@ -220,12 +227,14 @@ class Caching(object):
     # ----------------------------------------------------------
     def validate(self, videos, cache_size):
         is_valid = True
-        for files in self.caches:
-            if files:
-                filled = 0
-                for file in files:
-                    filled += videos[file]
-                is_valid = is_valid and (filled <= cache_size)
+        for cached_videos in self.caches:
+            if cached_videos:
+                avail_cache = cache_size
+                for cached_video in cached_videos:
+                    avail_cache -= videos[cached_video]
+                is_valid = is_valid and (avail_cache >= 0)
+            if not is_valid:
+                break
         return is_valid
 
     # ----------------------------------------------------------
@@ -233,6 +242,10 @@ class Caching(object):
         return _score(
             self.caches, network.requests, network.cache_latencies,
             network.endpoint_latencies)
+
+    # ----------------------------------------------------------
+    def clear(self):
+        self.caches = [set() for i in range(self.num_caches)]
 
     # ----------------------------------------------------------
     def fill(self, network):

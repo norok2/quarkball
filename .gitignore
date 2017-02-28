@@ -90,14 +90,6 @@ ENV/
 
 *.pdf
 
-.idea/vcs.xml
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/quarkball.iml
-.idea/workspace.xml
-.idea/inspectionProfiles/
-.kdev4/
 *.kate-swp
 *.kdev4
 data/output/

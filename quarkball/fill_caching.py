@@ -9,6 +9,7 @@ import operator
 import shutil
 import copy
 import multiprocessing
+import time
 
 import numpy as np
 
@@ -67,13 +68,14 @@ class CachingRandomPar(Caching):
     # ----------------------------------------------------------
     def fill(self, network):
         min_video_size = np.min(network.videos)
-        pool = multiprocessing.Pool(multiprocessing.cpu_count())
+        mp_pool = multiprocessing.Pool(multiprocessing.cpu_count())
         results = [
-            pool.apply_async(
+            mp_pool.apply_async(
                 _random_cache,
                 (network.videos, network.cache_size, min_video_size))
             for i in range(self.num_caches)]
         self.caches = [result.get() for result in results]
+        mp_pool = None
 
 
 # ======================================================================
@@ -189,7 +191,7 @@ class CachingEvolution(Caching):
             mutation_rate=0.05,
             mutation=0.1,
             elitism=0.005,
-            parallel=True):
+            multiproc=True):
         dirpath = os.path.dirname(filepath)
         filename = os.path.basename(filepath)
         basename = os.path.splitext(filename)[0]
@@ -226,6 +228,8 @@ class CachingEvolution(Caching):
         begin_time = datetime.datetime.now()
         generation = 0
         best_score = pool[0][0]
+        mp_pool = multiprocessing.Pool(multiprocessing.cpu_count()) \
+            if multiproc else None
         while generation < max_generations:
             # selection
             selected = pool[:int(pool_size * selection)]
@@ -235,11 +239,10 @@ class CachingEvolution(Caching):
 
             # crossover and mutate
             num_generators = 2
-            pool = multiprocessing.Pool(multiprocessing.cpu_count())
 
-            if parallel:
+            if multiproc:
                 results = [
-                    pool.apply_async(
+                    mp_pool.apply_async(
                         _breeding,
                         ([selected[i] for i in sorted(random.sample(
                             range(len(selected)), num_generators))],
@@ -256,7 +259,8 @@ class CachingEvolution(Caching):
 
             # delete old generation
             if os.path.isdir(old_evo_dirpath):
-                shutil.rmtree(old_evo_dirpath)
+                shutil.rmtree(old_evo_dirpath, ignore_errors=True)
+                shutil.rmtree(old_evo_dirpath, ignore_errors=True)
             shutil.move(evo_dirpath, old_evo_dirpath)
             os.makedirs(evo_dirpath)
 

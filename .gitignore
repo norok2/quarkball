@@ -100,3 +100,6 @@ ENV/
 .kdev4/
 *.kate-swp
 *.kdev4
+data/
+.idea/
+quarkball.zip

@@ -13,6 +13,7 @@ import os
 import datetime
 import shutil
 import multiprocessing
+import profile
 
 import numpy as np
 
@@ -68,7 +69,7 @@ def test_fill(
     in_filepath = os.path.join(in_dirpath, source + '.in')
     network = Network.load(in_filepath)
     out_filepath = os.path.join(out_dirpath, source + '.out')
-    caching = fill.CachingRandom(network.num_caches)
+    caching = fill.Caching(network.num_caches)
     caching.fill(network)
     print(repr(caching))
     print('Random Caching - Score: {}'.format(caching.score(network)))
@@ -79,7 +80,7 @@ def test_method(
         in_dirpath=IN_DIRPATH,
         out_dirpath=OUT_DIRPATH,
         source='example',
-        caching_method=Caching,
+        fill_cls=Caching,
         *fill_args,
         **fill_kws):
     if not os.path.isdir(out_dirpath):
@@ -87,7 +88,7 @@ def test_method(
     in_filepath = os.path.join(in_dirpath, source + '.in')
     network = Network.load(in_filepath)
     out_filepath = os.path.join(out_dirpath, source + '.out')
-    caching = caching_method(network.num_caches)
+    caching = fill_cls(network.num_caches)
     caching.fill(network, *fill_args, **fill_kws)
     caching.save(out_filepath)
     score = caching.score(network)
@@ -100,7 +101,7 @@ def test_method_seq(
         in_dirpath=IN_DIRPATH,
         out_dirpath=OUT_DIRPATH,
         sources=SOURCES,
-        caching_method=Caching,
+        fill_cls=Caching,
         *fill_args,
         **fill_kws):
     if not os.path.isdir(out_dirpath):
@@ -110,7 +111,7 @@ def test_method_seq(
         in_filepath = os.path.join(in_dirpath, source + '.in')
         network = Network.load(in_filepath)
         out_filepath = os.path.join(out_dirpath, source + '.out')
-        caching = caching_method(network.num_caches)
+        caching = fill_cls(network.num_caches)
         caching.fill(network, *fill_args, **fill_kws)
         caching.save(out_filepath)
         score = caching.score(network)
@@ -124,7 +125,7 @@ def test_method_par(
         in_dirpath=IN_DIRPATH,
         out_dirpath=OUT_DIRPATH,
         sources=SOURCES,
-        caching_method=Caching,
+        fill_cls=Caching,
         *fill_args,
         **fill_kws):
     if not os.path.isdir(out_dirpath):
@@ -135,7 +136,7 @@ def test_method_par(
     for source in sources:
         result = pool.apply_async(
             test_method,
-            (in_dirpath, out_dirpath, source, caching_method,) + fill_args,
+            (in_dirpath, out_dirpath, source, fill_cls,) + fill_args,
             fill_kws)
         results.append(result)
     for result in results:
@@ -149,7 +150,7 @@ def pseudo_monte_carlo(
         out_dirpath=os.path.join(OUT_DIRPATH, 'pseudo_monte_carlo'),
         best_subpath='best',
         sources=SOURCES,
-        caching_method=fill.CachingRandom,
+        fill_cls=fill.Caching,
         max_iter=int(1e8 - 1),
         min_score=2652000):
     print('Pseudo Monte Carlo simulation')
@@ -188,7 +189,7 @@ def pseudo_monte_carlo(
         for source in sources:
             network = networks[source]
             out_filepath = os.path.join(out_dirpath, source + '.out')
-            caching = caching_method(network.num_caches)
+            caching = fill_cls(network.num_caches)
             caching.fill(network)
             caching.save(out_filepath)
             scores[source] = caching.score(network)
@@ -242,53 +243,36 @@ def bruteforce(
 def montecarlo(
         in_dirpath=IN_DIRPATH,
         out_dirpath=os.path.join(OUT_DIRPATH, 'montecarlo'),
-        sources=SOURCES,
+        source='example',
         max_iter=int(1e8 - 1)):
     print('Montecarlo')
     if not os.path.isdir(out_dirpath):
         os.makedirs(out_dirpath)
-    tot_score = 0
-    pool = multiprocessing.Pool(multiprocessing.cpu_count())
-    results = []
-    for source in sources:
-        out_filepath = os.path.join(out_dirpath, source + '.out')
-        results.append(pool.apply_async(
-            test_method,
-            (in_dirpath, out_dirpath, source, fill.CachingMonteCarlo,
-             out_filepath, max_iter)))
-    for result in results:
-        tot_score += result.get()
-    print('\nTOTAL SCORE: {}\n'.format(tot_score))
+    test_method(
+        in_dirpath, out_dirpath, source, fill.CachingMonteCarlo,
+        os.path.join(out_dirpath, source + '.out'), max_iter)
 
 
 # ======================================================================
 def evolution(
         in_dirpath=IN_DIRPATH,
         out_dirpath=os.path.join(OUT_DIRPATH, 'evolution'),
-        sources=SOURCES,
+        source='example',
         max_generations=int(1e8 - 1),
-        pool_size=200,
+        pool_size=400,
         selection=0.5,
         crossover=0.6,
         mutation_rate=0.05,
         mutation=0.1,
-        elitism=0.005):
+        elitism=0.005,
+        parallel=True):
     print('Evolution')
     if not os.path.isdir(out_dirpath):
         os.makedirs(out_dirpath)
-    tot_score = 0
-    pool = multiprocessing.Pool(multiprocessing.cpu_count())
-    results = []
-    for source in sources:
-        out_filepath = os.path.join(out_dirpath, source + '.out')
-        results.append(pool.apply_async(
-            test_method,
-            (in_dirpath, out_dirpath, source, fill.CachingEvolution,
-             out_filepath, max_generations, pool_size,
-             selection, crossover, mutation_rate, mutation, elitism)))
-    for result in results:
-        tot_score += result.get()
-    print('\nTOTAL SCORE: {}\n'.format(tot_score))
+    test_method(
+        in_dirpath, out_dirpath, source, fill.CachingEvolution,
+        os.path.join(out_dirpath, source + '.out'), max_generations, pool_size,
+        selection, crossover, mutation_rate, mutation, elitism, parallel)
 
 
 # ======================================================================
@@ -302,8 +286,10 @@ def main():
     # test_fill()
     # pseudo_monte_carlo()
     # bruteforce()
-    # montecarlo(sources=(SOURCES[3],))
-    evolution(sources=(SOURCES[1],))
+    # montecarlo(sources=SOURCES[3])
+    evolution(source=SOURCES[1], parallel=False)
+    # profile.run(
+    #     "test_method(source=SOURCES[3], fill_cls=fill.Caching)")
 
     end_time = datetime.datetime.now()
     print('\nExecTime: {}'.format(end_time - begin_time))

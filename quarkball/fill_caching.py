@@ -7,6 +7,8 @@ import itertools
 import datetime
 import operator
 import shutil
+import copy
+import multiprocessing
 
 import numpy as np
 
@@ -17,7 +19,6 @@ from quarkball.utils import Network, Caching, jit
 
 
 # ======================================================================
-# @jit
 def _random_cache(videos, avail_cache, min_video_size=None):
     if min_video_size is None:
         min_video_size = np.min(videos)
@@ -37,7 +38,7 @@ def _random_cache(videos, avail_cache, min_video_size=None):
 # ======================================================================
 def _breeding(pool, network, crossover=0.5, mutation_rate=0.1, mutation=0.01):
     pool = sorted(pool, key=operator.itemgetter(0), reverse=True)
-    score, caching = pool[0]
+    score, caching = copy.deepcopy(pool[0])
     min_video_size = np.min(network.videos)
     if crossover is None:
         raise NotImplementedError('Dynamic recombination not implemented!')
@@ -46,7 +47,7 @@ def _breeding(pool, network, crossover=0.5, mutation_rate=0.1, mutation=0.01):
         other_caching = pool[1][1]
         for i in random.sample(range(network.num_caches),
                                int(network.num_caches * (1 - crossover))):
-            caching.caches[i] = other_caching.caches[i]
+            caching.caches[i] = copy.deepcopy(other_caching.caches[i])
 
         # mutation
         if random.random() >= mutation_rate:
@@ -59,16 +60,20 @@ def _breeding(pool, network, crossover=0.5, mutation_rate=0.1, mutation=0.01):
 
 
 # ======================================================================
-class CachingRandom(Caching):
+class CachingRandomPar(Caching):
     def __init__(self, *args, **kwargs):
         Caching.__init__(self, *args, **kwargs)
 
     # ----------------------------------------------------------
     def fill(self, network):
         min_video_size = np.min(network.videos)
-        self.caches = [
-            _random_cache(network.videos, network.cache_size, min_video_size)
+        pool = multiprocessing.Pool(multiprocessing.cpu_count())
+        results = [
+            pool.apply_async(
+                _random_cache,
+                (network.videos, network.cache_size, min_video_size))
             for i in range(self.num_caches)]
+        self.caches = [result.get() for result in results]
 
 
 # ======================================================================
@@ -117,7 +122,7 @@ class CachingMonteCarlo(Caching):
                 for i in range(self.num_caches)]
             score = self.score(network)
             end_time = datetime.datetime.now()
-            print('montecarlo - {:20s} SCORE: {}  ({})  j={}, t={}'.format(
+            print('montecarlo - {:20s} SCORE: {:7d}  ({})  j={}, t={}'.format(
                 filename, score, curr_score, j, end_time - begin_time),
                 flush=True)
             begin_time = end_time
@@ -178,12 +183,13 @@ class CachingEvolution(Caching):
             network,
             filepath=None,
             max_generations=int(1e7 - 1),
-            pool_size=200,
+            pool_size=400,
             selection=0.5,
-            crossover=0.5,
-            mutation_rate=0.1,
-            mutation=0.01,
-            elitism=0.05):
+            crossover=0.6,
+            mutation_rate=0.05,
+            mutation=0.1,
+            elitism=0.005,
+            parallel=True):
         dirpath = os.path.dirname(filepath)
         filename = os.path.basename(filepath)
         basename = os.path.splitext(filename)[0]
@@ -193,49 +199,66 @@ class CachingEvolution(Caching):
         if not os.path.isdir(evo_dirpath):
             os.makedirs(evo_dirpath)
 
-        pool_filenames = []
+        pool_filenames, pool_dirpath = [], ''
         if os.path.isdir(evo_dirpath):
             pool_filenames = os.listdir(evo_dirpath)
+            pool_dirpath = evo_dirpath
         if len(pool_filenames) != pool_size and os.path.isdir(old_evo_dirpath):
             pool_filenames = os.listdir(old_evo_dirpath)
+            pool_dirpath = old_evo_dirpath
         if len(pool_filenames) != pool_size:
             pool = []
             if os.path.isfile(filepath):
                 caching = Caching.load(filepath)
                 pool.append((caching.score(network), caching))
             for _ in range(pool_size - len(pool)):
-                caching = CachingRandom(network.num_caches)
+                caching = Caching(network.num_caches)
                 caching.fill(network)
                 pool.append((caching.score(network), caching))
         else:
             pool = [
                 (int(name.split('_')[0]),
-                 Caching.load(os.path.join(evo_dirpath, name)))
+                 Caching.load(os.path.join(pool_dirpath, name)))
                 for name in pool_filenames]
 
         pool = sorted(pool, key=operator.itemgetter(0), reverse=True)
 
+        begin_time = datetime.datetime.now()
         generation = 0
+        best_score = pool[0][0]
         while generation < max_generations:
             # selection
             selected = pool[:int(pool_size * selection)]
 
             # elitism
-            elite = pool[:int(pool_size * elitism) + 1]
+            elite = copy.deepcopy(pool[:int(pool_size * elitism) + 1])
 
             # crossover and mutate
             num_generators = 2
-            pool = elite + [_breeding([selected[i] for i in sorted(
-                random.sample(range(len(selected)), num_generators))],
-                              network, crossover, mutation_rate, mutation)
-                    for j in range(pool_size - len(elite))]
+            pool = multiprocessing.Pool(multiprocessing.cpu_count())
+
+            if parallel:
+                results = [
+                    pool.apply_async(
+                        _breeding,
+                        ([selected[i] for i in sorted(random.sample(
+                            range(len(selected)), num_generators))],
+                         network, crossover, mutation_rate, mutation))
+                    for _ in range(pool_size - len(elite))]
+                offspring = [result.get() for result in results]
+            else:
+                offspring = [
+                    _breeding([selected[i] for i in sorted(random.sample(
+                        range(len(selected)), num_generators))], network,
+                              crossover, mutation_rate, mutation)
+                    for _ in range(pool_size - len(elite))]
+            pool = elite + offspring
 
             # delete old generation
             if os.path.isdir(old_evo_dirpath):
                 shutil.rmtree(old_evo_dirpath)
             shutil.move(evo_dirpath, old_evo_dirpath)
             os.makedirs(evo_dirpath)
-
 
             # save new generation
             pool = sorted(pool, key=operator.itemgetter(0), reverse=True)
@@ -245,8 +268,16 @@ class CachingEvolution(Caching):
                                  score, i, generation) + filename))
              for i, (score, caching) in enumerate(pool)]
 
-            print('{} best: {}'.format(basename, pool[0][0]), flush=True)
-            pool[0][1].save(filepath)
+            if pool[0][0] > best_score:
+                pool[0][1].save(filepath)
+                best_score = pool[0][0]
+
+            end_time = datetime.datetime.now()
+            print('evolution - {:20s} SCORE: {:7d}, gen={}, t={}'.format(
+                filename, best_score, generation, end_time - begin_time),
+                flush=True)
+            begin_time = end_time
+
             generation += 1
 
         # return best result

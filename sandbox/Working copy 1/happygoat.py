@@ -1,11 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 #################################
 #LIBRARIES(START)
 #################################
-
 from __future__ import division
 import math
 import random
-#import numpy
+import numpy as np
+import quarkball.fill_caching as f_caching
+from quarkball.utils import Network, Caching as util
 
 #import sys
 #import os
@@ -13,6 +17,28 @@ import random
 
 ##############
 #LIBRARIES(END)
+##############
+
+################
+#METADATA(START)
+################
+# :: Project Details
+INFO = {
+    'authors': (
+        'Robert Alm <robertkristianalm@gmail.com>',
+    ),
+    'copyright': 'none for now',
+    'license': 'GNU General Public License version 3 or later (GPLv3+)',
+    'notice':
+        """
+This program is free software and it comes with ABSOLUTELY NO WARRANTY.
+It is covered by the GNU General Public License version 3 (GPLv3).
+You are welcome to redistribute it under its terms and conditions.
+        """
+}
+
+##############
+#METADATA(END)
 ##############
 
 
@@ -109,7 +135,7 @@ def firstLineCorrection(inputForNInitiation):
     global itIsTheFirstLine
     global T
     itIsTheFirstLine = False
-    T = 11
+    T = inputForNInitiation
 
 def SecondLineCorrection():
     global itIsTheSecondLine

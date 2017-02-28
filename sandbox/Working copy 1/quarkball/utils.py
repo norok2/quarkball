@@ -9,8 +9,12 @@ quarkball2017: base classes
 from __future__ import (
     division, absolute_import, print_function, unicode_literals)
 
+import array
 import numpy as np
-import numba
+try:
+    from numba import jit
+except ImportError:
+    jit = None
 
 
 # ======================================================================
@@ -22,6 +26,24 @@ class Network(object):
             cache_size,
             cache_latencies,
             requests=None):
+        """
+        Generate the network.
+
+        Args:
+            videos (np.ndarray): The video array.
+                The values correspond to the video size in MB.
+                The indexes correspond to the video ID.
+            endpoint_latencies (np.ndarray): The latency of endpoints.
+            cache_size (int): The capacity of each caching server in MB.
+            cache_latencies (np.ndarray): The cache latency of endpoints.
+                First dim goes through endpoints.
+                Second dim goes through caches.
+            requests (list[tuple]): The list of requests.
+                Each tuple contains:
+                - the video ID;
+                - the requesting endpoint;
+                - the number of requests.
+        """
         self.videos = videos
         self.endpoint_latencies = endpoint_latencies
         self.cache_size = cache_size
@@ -47,8 +69,6 @@ class Network(object):
     @property
     def num_requests(self):
         return len(self.requests)
-
-
 
     # ----------------------------------------------------------
     @property
@@ -89,7 +109,8 @@ class Network(object):
                     cache_latencies[i, k] = latency
             requests = []
             for i in range(num_requests):
-                requests.append([int(val) for val in file.readline().split()])
+                requests.append(
+                    tuple(int(val) for val in file.readline().split()))
         self = cls(
             videos, endpoint_latencies, cache_size, cache_latencies, requests)
         return self
@@ -130,6 +151,14 @@ class Caching(object):
     def __init__(
             self,
             caches=None):
+        """
+        Caching of videos.
+
+        Args:
+            caches (list[set]): The videos contained in each caching server.
+                The information on the cache size (maximum memory available)
+                and videos' size is not stored here.
+        """
         try:
             iter(caches)
         except TypeError:
@@ -177,7 +206,7 @@ class Caching(object):
             for i in range(num_caching):
                 data = [int(val) for val in file.readline().split()]
                 # index = data[0]
-                self.caches.add(set(data[1:]))
+                self.caches.append(set(data[1:]))
         return self
 
     # ----------------------------------------------------------
@@ -211,18 +240,18 @@ class Caching(object):
 
 
 # ======================================================================
-# @numba.jit
-def _score(servers, requests, cache_latencies, endpoint_latencies):
-    scoring = 0
+@jit
+def _score(caches, requests, cache_latencies, endpoint_latencies):
+    score = 0
     num_tot = 0
     for video, endpoint, num in requests:
         num_tot += num
         latency = max_latency = endpoint_latencies[endpoint]
-        for cache, videos in enumerate(servers):
+        for cache, videos in enumerate(caches):
             if video in videos:
                 cache_latency = cache_latencies[endpoint, cache]
-                if (cache_latency and cache_latency < latency):
+                if cache_latency and cache_latency < latency:
                     latency = cache_latencies[endpoint, cache]
-        scoring += (max_latency - latency) * num
-    scoring = int(scoring / num_tot * 1000)
-    return scoring
+        score += (max_latency - latency) * num
+    score = int(score / num_tot * 1000)
+    return score

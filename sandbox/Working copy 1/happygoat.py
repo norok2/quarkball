@@ -192,6 +192,73 @@ def test_utilsPyNotAnActualFunction():
 
 def utilsPyNotAnActualFunction():
     #module utils.py is accessed as util
+
+    ###Network Class###
+    #the class is the util.Network(object)
+
+    util.Network.num_videos()
+    # @property parameters (self)
+    #returns len(self.videos)
+
+    util.Network.num_endpoints()
+    # @property parameters (self)
+    #returns len(self.endpoint_latencies)
+
+    util.Network.num_caches()
+    # @property parameters (self)
+    #returns cache_latencies.shape[1]
+
+    util.Network.num_requests()
+    # @property parameters (self)
+    #returns len(self.requests)
+
+    util.Network.requests()
+    # @property parameters (self)
+    #returns self._requests
+
+    util.Network.requests()
+    # @requests.setter parameters (self, value)
+    #returns self._requests = value
+
+    util.Network.load()
+    # @classmethod parameters (cls, filepath)
+    #Loads the data from the input file.
+
+    util.Network.save()
+    # parameters (filepath, 'w+')
+    #Saves the data to the output file.
+    #num_videos = self.num_videos
+    #num_endpoints = self.num_endpoints
+    #num_requests = self.num_requests
+    #num_caches = self.num_caches
+    #cache_size = self.cache_size
+
+    util.Network.score()
+    # parameters (self, caching)
+    #returns _score(caching.caches, self.requests,
+    # self.cache_latencies, self.endpoint_latencies)
+
+    #__init__(self,videos,endpoint_latencies,
+    # cache_size, cache_latencies, requests=None):
+    #self.videos = videos
+    #self.endpoint_latencies = endpoint_latencies
+    #self.cache_size = cache_size
+    #self.cache_latencies = cache_latencies
+    #self._requests = requests
+
+    #__str__(self):
+    #text = '{}: '.format(self.__class__.__name__)
+    #names = ['num_videos', 'num_endpoints', 'num_caches', 'num_requests']
+    #for name in names:
+    #    text += '{}={}  '.format(name, getattr(self, name))
+    #return text
+
+    #__repr__(self):
+    #return str(self.__dict__)
+
+
+    ###Caching Class###
+    #the class is the util.Caching(object)
     pass
 
 

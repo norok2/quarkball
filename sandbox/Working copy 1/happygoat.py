@@ -9,7 +9,9 @@ import math
 import random
 import numpy as np
 import quarkball.fill_caching as f_caching
-from quarkball.utils import Network, Caching as util
+import quarkball.utils  as util
+import quarkball.test_utils  as test_u
+import quarkball.__init__ as init
 
 #import sys
 #import os
@@ -78,6 +80,38 @@ fileForInput = open('input.in','r')
 
 
 
+######################
+#MODULE CALLERS(START)
+######################
+
+#Here is the place that all function callers
+#for other modules are collected.
+
+def initPyNotAnActualFunction():
+    #as init
+    pass
+
+def fill_cachingPyNotAnActualFunction():
+    #as f_caching
+    pass
+
+def test_utilsPyNotAnActualFunction():
+    #as t_util
+    pass
+
+def utilsPyNotAnActualFunction():
+    #as util
+    pass
+
+
+
+####################
+#MODULE CALLERS(END)
+####################
+
+
+
+
 ##########################
 #TEMPLATE FUNCTIONS(START)
 ##########################
@@ -104,7 +138,7 @@ def loader():
                 requestArrayCollector(N.rstrip('\n'))
                 requestArrayReapairer(howManyRequests)
 
-def printTheResults():
+def printToConsole():
     print("howManyVideos variable is " + str(howManyVideos))
     print("howManyEndPoints variable is " + str(howManyEndPoints))
     print("howManyCaches variable is " + str(howManyCaches))
@@ -113,6 +147,10 @@ def printTheResults():
     print("videoArray list has " + str(videoArray))
     print("endPointArray list has " + str(endPointArray))
     print("requestArray list has " + str(requestArray))
+
+
+def saver():
+    fileForOutput.write("Hello! this line is saved to the file " + str(fileForOutput))
 
 
 
@@ -294,7 +332,7 @@ class Egg(Cote):
 def main():
     countForT
     loader()
-    printTheResults()
+    printToConsole()
 
 
                 

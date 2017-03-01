@@ -89,7 +89,49 @@ fileForInput = open('input.in','r')
 
 def initPyNotAnActualFunction():
     #module __init__.py is accessed as init
-    pass
+    init.msg()
+    #Display a feedback message to the standard output.
+    """
+        Display a feedback message to the standard output.
+
+        Args:
+            text (str|Any): Message to display or object with `__repr__`.
+            verb_lvl (int): Current level of verbosity.
+            verb_threshold (int): Threshold level of verbosity.
+            fmt (str): Format of the message (if `blessed` supported).
+                If None, a standard formatting is used.
+            *args (tuple): Positional arguments to be passed to `print`.
+            **kwargs (dict): Keyword arguments to be passed to `print`.
+
+        Returns:
+            None.
+
+        Examples:
+            >>> s = 'Hello World!'
+            >>> msg(s)
+            Hello World!
+            >>> msg(s, VERB_LVL['medium'], VERB_LVL['low'])
+            Hello World!
+            >>> msg(s, VERB_LVL['low'], VERB_LVL['medium'])  # no output
+            >>> msg(s, fmt='{t.green}')  # if ANSI Terminal, green text
+            Hello World!
+            >>> msg('   :  a b c', fmt='{t.red}{}')  # if ANSI Terminal, red text
+               :  a b c
+            >>> msg(' : a b c', fmt='cyan')  # if ANSI Terminal, cyan text
+             : a b c
+        """
+
+    init.my_actual_code()
+    #parameters (*args, **kwargs)
+    # it has a "TO DO" to modify
+
+    init.handle_arg()
+    #Handle command-line application arguments.
+    # :: Create Argument Parser
+
+    init.main()
+    # :: handle program parameters
+    
 
 def fill_cachingPyNotAnActualFunction():
     #module fill_caching.py is accessed as f_caching

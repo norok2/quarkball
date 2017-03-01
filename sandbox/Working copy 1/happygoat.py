@@ -162,8 +162,33 @@ def fill_cachingPyNotAnActualFunction():
 
 
 def test_utilsPyNotAnActualFunction():
-    #module test_utils.py is accessed as t_util
-    pass
+    #module test_utils.py is accessed as test_u
+
+    test_u.test_network_input()
+    #parameters (in_dirpath=IN_DIRPATH, sources=SOURCES)
+
+    test_u.test_caching_output()
+    #parameters (in_dirpath=OUT_DIRPATH, source='example')
+
+    test_u.test_score()
+    #parameters (in_dirpath=IN_DIRPATH, out_dirpath=OUT_DIRPATH,
+    # source='example')
+
+    test_u.test_fill()
+    #parameters (in_dirpath=IN_DIRPATH, out_dirpath=OUT_DIRPATH,
+    # source='example')
+
+    test_u.test_method()
+    #parameters (in_dirpath=IN_DIRPATH, out_dirpath=OUT_DIRPATH,
+    # sources=SOURCES, caching_method=Caching)
+
+    test_u.main()
+    #runs all the tests from test_utils.py
+    # test_network_input()
+    # test_caching_output()
+    # test_score()
+    # test_fill()
+    #print('\nExecTime: {}'.format(end_time - begin_time))
 
 def utilsPyNotAnActualFunction():
     #module utils.py is accessed as util

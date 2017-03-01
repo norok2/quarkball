@@ -131,11 +131,35 @@ def initPyNotAnActualFunction():
 
     init.main()
     # :: handle program parameters
-    
+
 
 def fill_cachingPyNotAnActualFunction():
     #module fill_caching.py is accessed as f_caching
-    pass
+    #it is a collection of caching classes that inherit from Caching class
+    #chaching class comes from utils module
+
+    #The class is the f_caching.CachingRandom(Caching)
+    f_caching.CachingRandom.fill()
+    #parameters(self, network)
+
+
+    #The class is the f_caching.CachingRandomSeed(Caching)
+    f_caching.CachingRandomSeed.fill()
+    #parameters(self, network)
+
+
+    #The class is the f_caching.CachingOptimByRequests(Caching)
+    f_caching.CachingOptimByRequests.fill()
+    #parameters(self, network)
+
+    #The class is the f_caching.CachingOptimByCaches(Caching)
+    f_caching.CachingOptimByCaches.fill()
+    #parameters(self, network)
+
+    #The class is the f_caching.CachingBruteForce(Caching)
+    f_caching.CachingBruteForce.fill()
+    #parameters(self, network)
+    
 
 def test_utilsPyNotAnActualFunction():
     #module test_utils.py is accessed as t_util

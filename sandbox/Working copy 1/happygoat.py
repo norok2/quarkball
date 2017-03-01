@@ -88,19 +88,19 @@ fileForInput = open('input.in','r')
 #for other modules are collected.
 
 def initPyNotAnActualFunction():
-    #as init
+    #module __init__.py is accessed as init
     pass
 
 def fill_cachingPyNotAnActualFunction():
-    #as f_caching
+    #module fill_caching.py is accessed as f_caching
     pass
 
 def test_utilsPyNotAnActualFunction():
-    #as t_util
+    #module test_utils.py is accessed as t_util
     pass
 
 def utilsPyNotAnActualFunction():
-    #as util
+    #module utils.py is accessed as util
     pass
 
 

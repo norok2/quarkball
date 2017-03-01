@@ -259,8 +259,87 @@ def utilsPyNotAnActualFunction():
 
     ###Caching Class###
     #the class is the util.Caching(object)
-    pass
 
+    #__init__(self, caches=None):
+    #    """
+    #    Caching of videos.
+
+    #    Args:
+    #        caches (list[set]): The videos contained in each caching server.
+    #            The information on the cache size (maximum memory available)
+    #            and videos' size is not stored here.
+    #    """
+    #    try:
+    #        iter(caches)
+    #    except TypeError:
+    #        if caches > 0:
+    #            caches = [set() for i in range(caches)]
+    #        else:
+    #            raise AttributeError(
+    #                'Either `caches` or `num_caches` must be supplied!')
+    #    finally:
+    #        self._caches = caches
+
+    util.Caching.num_caches()
+    # @property parameters (self)
+    # returns len(self.caches)
+
+    util.Caching.caches()
+    # @property parameters (self)
+    # returns self._caches
+
+    util.Caching.caches()
+    # @caches.setter parameters (self, value)
+    # returns self._caches = value
+
+    #__str__(self):
+    #    text = '{}: '.format(self.__class__.__name__)
+    #    names = ['num_caches']
+    #    for name in names:
+    #        text += '{}={}  '.format(name, getattr(self, name))
+    #    return text
+
+
+    # __repr__(self):
+    #    return str(self.__dict__)
+
+    util.Caching.load()
+    # @classmethod parameters (cls, filepath)
+    # loads the caches(?) from the input file
+
+    util.Caching.save()
+    # @classmethod parameters (self, filepath)
+    # saves to the outputfile
+
+    util.Caching.validate()
+    # parameters (self, videos, cache_size)
+    # returns is_valid = is_valid and (filled <= cache_size)
+
+    util.Caching.score()
+    # parameters (self, network)
+    # returns _score(self.caches, network.requests,
+    # network.cache_latencies, network.endpoint_latencies)
+
+    util.Caching.fill()
+    # parameters (self, network)
+    # raises an error message if called.
+
+
+    # @jit
+    #_score(caches, requests, cache_latencies, endpoint_latencies):
+    #score = 0
+    #num_tot = 0
+    #for video, endpoint, num in requests:
+    #    num_tot += num
+    #    latency = max_latency = endpoint_latencies[endpoint]
+    #    for cache, videos in enumerate(caches):
+    #        if video in videos:
+    #            cache_latency = cache_latencies[endpoint, cache]
+    #            if cache_latency and cache_latency < latency:
+    #                latency = cache_latencies[endpoint, cache]
+    #    score += (max_latency - latency) * num
+    #score = int(score / num_tot * 1000)
+    #return score
 
 
 ####################

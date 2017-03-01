@@ -159,7 +159,7 @@ def fill_cachingPyNotAnActualFunction():
     #The class is the f_caching.CachingBruteForce(Caching)
     f_caching.CachingBruteForce.fill()
     #parameters(self, network)
-    
+
 
 def test_utilsPyNotAnActualFunction():
     #module test_utils.py is accessed as t_util
@@ -372,11 +372,11 @@ def distance(p1, q1, p2, q2):
 #CLASSES(END)
 #############
 
-class Object:
+class Object2:
     def __init__(self):
         print("I am an object and i just been constructed")
         
-class Cote(object):
+class Cote(Object2):
     def __init__(self):
         print("I am an cote and i just been constructed")
         
